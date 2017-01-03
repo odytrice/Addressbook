@@ -51,12 +51,12 @@ namespace Addressbook.Web.Utils
 
         public Task<string> GetPasswordHashAsync(User user)
         {
-            return _account.GetPasswordHash(user).AsTask();
+            return _account.GetPasswordHash(user.UserId).AsTask();
         }
 
         public Task<IList<string>> GetRolesAsync(User user)
         {
-            return _account.GetRolesAsync(user).AsTask();
+            return _account.GetRoles(user).AsTask();
         }
 
         public Task<bool> HasPasswordAsync(User user)
@@ -76,7 +76,7 @@ namespace Addressbook.Web.Utils
 
         public Task SetPasswordHashAsync(User user, string passwordHash)
         {
-            return _account.SetPasswordHash(user, passwordHash).AsTask();
+            return _account.SetPasswordHash(user.UserId, passwordHash).AsTask();
         }
 
         public Task UpdateAsync(User user)

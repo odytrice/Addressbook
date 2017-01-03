@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Addressbook.Core.Models
 {
-    public class UserModel
+    public class UserModel: Model
     {
-        public int UserID { get; set; }
+        public int UserId { get; set; }
         public string  Email { get; set; }
         public string Password { get; set; }
         public ICollection<RoleModel> Roles { get; set; } = new List<RoleModel>();

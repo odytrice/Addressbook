@@ -2,10 +2,10 @@
 
 namespace Addressbook.Core.Models
 {
-    public class RoleModel
+    public class RoleModel : Model
     {
-        public int RoleID { get; set; }
-        public string  Name { get; set; }
+        public int RoleId { get; set; }
+        public string Name { get; set; }
         public ICollection<PermissionModel> Permissions { get; set; } = new List<PermissionModel>();
     }
 }

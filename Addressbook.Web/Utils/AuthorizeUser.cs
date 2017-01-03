@@ -56,7 +56,7 @@ namespace Addressbook.Web.Utils
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new RedirectResult("/home/notauthorized");
+            filterContext.Result = new RedirectResult("/account/notauthorized");
         }
     }
 }

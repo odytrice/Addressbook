@@ -34,6 +34,7 @@
       <HintPath>..\packages\Operation.1.0.7\lib\net45\Operation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +48,7 @@
     <Compile Include="Interface\Managers\IAccountManager.cs" />
     <Compile Include="Interface\Queries\IAccountQueries.cs" />
     <Compile Include="Managers\AccountManager.cs" />
+    <Compile Include="Models\Model.cs" />
     <Compile Include="Models\PermissionModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\UserModel.cs" />

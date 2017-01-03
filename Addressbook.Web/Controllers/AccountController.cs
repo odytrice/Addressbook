@@ -91,5 +91,15 @@ namespace Addressbook.Web.Controllers
             Authentication.SignOut();
             return RedirectToAction("login");
         }
+
+        public ActionResult NotAuthorized()
+        {
+            return RedirectToAction("login");
+        }
+
+        public ActionResult SignUp()
+        {
+            return View();
+        }
     }
 }

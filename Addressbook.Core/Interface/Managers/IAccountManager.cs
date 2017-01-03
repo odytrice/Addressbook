@@ -12,11 +12,14 @@ namespace Addressbook.Core.Interface.Managers
         Operation<UserModel> CreateUser(UserModel user);
         Operation DeleteUser(UserModel user);
         Operation<UserModel> UpdateUser(UserModel user);
-        Operation<string> SetPasswordHash(UserModel user, string passwordHash);
+
+        Operation<string> GetPasswordHash(int userId);
+        Operation<string> SetPasswordHash(int userId, string passwordHash);
+
+
         Operation RemoveUserFromRole(UserModel user, string roleName);
         Operation<bool> IsUserInRole(UserModel user, string roleName);
-        Operation<IList<string>> GetRolesAsync(UserModel user);
-        Operation<string> GetPasswordHash(UserModel user);
+        Operation<IList<string>> GetRoles(UserModel user);        
         Operation<UserModel> FindByEmail(string userName);
         Operation<UserModel> FindByID(int userId);
         Operation<PermissionModel[]> GetPermissions(int userId);

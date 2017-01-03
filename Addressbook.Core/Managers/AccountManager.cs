@@ -9,7 +9,7 @@ using Addressbook.Core.Models;
 
 namespace Addressbook.Core.Managers
 {
-    public class AccountManager: IAccountManager
+    public class AccountManager : IAccountManager
     {
         private IAccountQueries _queries;
 
@@ -18,11 +18,19 @@ namespace Addressbook.Core.Managers
             _queries = queries;
         }
 
-        public Operation<UserModel> CreateUser(UserModel user)
+        public Operation<UserModel> CreateUser(UserModel model)
         {
             return Operation.Create(() =>
             {
-                return user;
+                //Validate User
+                model.Validate().Throw();
+
+                //Check to see if User already exists
+                var user = _queries.GetUserById(model.UserId);
+                if (user != null) throw new Exception("User Already Exists");
+
+                var newUser = _queries.CreateUser(model);
+                return newUser;
             });
         }
 
@@ -30,7 +38,7 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                
+                _queries.DeleteUser(user);
             });
         }
 
@@ -38,7 +46,7 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return new UserModel();
+                return _queries.FindByEmail(userName);
             });
         }
 
@@ -46,14 +54,15 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return new UserModel();
+                return _queries.GetUserById(userId);
             });
         }
 
-        public Operation<string> GetPasswordHash(UserModel user)
+        public Operation<string> GetPasswordHash(int userId)
         {
             return Operation.Create(() =>
             {
+                var user = _queries.GetUserById(userId);
                 return user.Password;
             });
         }
@@ -62,16 +71,15 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return new PermissionModel[] { };
+                return _queries.GetPermissions(userId);
             });
         }
 
-        public Operation<IList<string>> GetRolesAsync(UserModel user)
+        public Operation<IList<string>> GetRoles(UserModel user)
         {
             return Operation.Create(() =>
             {
-                IList<string> roles = new[] { "Admin" };
-                return roles;
+                return _queries.GetRoles(user.UserId).ToList() as IList<string>;
             });
         }
 
@@ -79,7 +87,8 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return false;
+                var roles = _queries.GetRoles(user.UserId);
+                return roles.Any(r => r.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase));
             });
         }
 
@@ -87,21 +96,26 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                
+                var role = _queries.GetRoleByName(roleName);
+                if (role == null) throw new Exception("Invalid Role Name");
+                _queries.RemoveUserRole(user.UserId, role.RoleId);
             });
         }
 
-        public Operation<string> SetPasswordHash(UserModel user, string passwordHash)
+        public Operation<string> SetPasswordHash(int userId, string passwordHash)
         {
             return Operation.Create(() =>
             {
-                return passwordHash;
+                return _queries.UpdatePasswordHash(userId, passwordHash);
             });
         }
 
         public Operation<UserModel> UpdateUser(UserModel user)
         {
-            return Operation.Create(() => user);
+            return Operation.Create(() =>
+            {
+                return _queries.UpdateUser(user);
+            });
         }
     }
 }

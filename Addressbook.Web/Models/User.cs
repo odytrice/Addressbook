@@ -11,8 +11,8 @@ namespace Addressbook.Web.Models
     {
         public int Id
         {
-            get { return UserID; }
-            set { UserID = value; }
+            get { return UserId; }
+            set { UserId = value; }
         }
         public string UserName
         {

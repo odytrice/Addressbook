@@ -56,7 +56,8 @@ namespace Addressbook.Web.Utils
 
         public Task<IList<string>> GetRolesAsync(User user)
         {
-            return _account.GetRoles(user).AsTask();
+            var getRoles = _account.GetRoles(user);
+            return getRoles.AsTask();
         }
 
         public Task<bool> HasPasswordAsync(User user)

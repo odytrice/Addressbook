@@ -18,6 +18,7 @@ namespace Addressbook.Web.Controllers
             int userID = User.Identity.GetUserId<int>();
             string email = User.Identity.GetUserName();
 
+
             var user = new User { UserId = userID, Email = email };
             return View(user);
         }

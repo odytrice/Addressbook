@@ -80,7 +80,8 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return _queries.GetRoles(user.UserId).ToList() as IList<string>;
+                var roles = _queries.GetRoles(user.UserId).Select(r => r.Name).ToList();
+                return roles as IList<string>;
             });
         }
 

@@ -78,7 +78,7 @@ namespace Addressbook.Web.Controllers
         {
             return Operation.Create(() =>
             {
-                var identity = _user.CreateIdentity(model, DefaultAuthenticationTypes.ApplicationCookie);
+                var identity = _user.CreateIdentityAsync(model, DefaultAuthenticationTypes.ApplicationCookie).Result;
 
                 //Optionally Add Additional Claims
 

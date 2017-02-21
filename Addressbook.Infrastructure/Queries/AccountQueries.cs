@@ -47,9 +47,6 @@ namespace Addressbook.Infrastructure.Queries
         {
             var user = _db.Set<User>().Where(u => u.Email == email).FirstOrDefault();
             var model = new UserModel().Assign(user);
-
-            //For Security, Don't return the password Hash
-            model.Password = null;
             return model;
         }
 

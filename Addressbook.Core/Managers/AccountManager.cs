@@ -54,7 +54,8 @@ namespace Addressbook.Core.Managers
         {
             return Operation.Create(() =>
             {
-                return _queries.GetUserById(userId);
+                var user = _queries.GetUserById(userId);
+                return user;
             });
         }
 

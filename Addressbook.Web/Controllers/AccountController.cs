@@ -22,7 +22,9 @@ namespace Addressbook.Web.Controllers
 
         public AccountController(IAccountManager account)
         {
-            _user = new UserManager<User, int>(new UserStore(account));
+            var store = new UserStore(account);
+            _user = new UserManager<User, int>(store);
+            _user.PasswordHasher = new MD5PasswordHasher();
         }
 
         // GET: Account

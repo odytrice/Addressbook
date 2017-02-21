@@ -87,7 +87,6 @@ namespace Addressbook.Infrastructure.Queries
         {
             var user = _db.Set<User>().Find(userId);
             var model = new UserModel().Assign(user);
-            model.Password = null;
             return model;
         }
 

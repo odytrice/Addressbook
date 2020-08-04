@@ -9,19 +9,19 @@ namespace Addressbook.Core.Interface.Managers
 {
     public interface IAccountManager
     {
-        Operation<UserModel> CreateUser(UserModel user);
-        Operation DeleteUser(UserModel user);
-        Operation<UserModel> UpdateUser(UserModel user);
+        UserModel CreateUser(UserModel user);
+        void DeleteUser(UserModel user);
+        UserModel UpdateUser(UserModel user);
 
-        Operation<string> GetPasswordHash(int userId);
-        Operation<string> SetPasswordHash(int userId, string passwordHash);
+        string GetPasswordHash(int userId);
+        string SetPasswordHash(int userId, string passwordHash);
 
 
-        Operation RemoveUserFromRole(UserModel user, string roleName);
-        Operation<bool> IsUserInRole(UserModel user, string roleName);
-        Operation<IList<string>> GetRoles(UserModel user);        
-        Operation<UserModel> FindByEmail(string userName);
-        Operation<UserModel> FindByID(int userId);
-        Operation<PermissionModel[]> GetPermissions(int userId);
+        void RemoveUserFromRole(UserModel user, string roleName);
+        bool IsUserInRole(UserModel user, string roleName);
+        IList<string> GetRoles(UserModel user);        
+        UserModel FindByEmail(string userName);
+        UserModel FindByID(int userId);
+        PermissionModel[] GetPermissions(int userId);
     }
 }

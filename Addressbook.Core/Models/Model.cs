@@ -9,17 +9,9 @@ namespace Addressbook.Core.Models
 {
     public abstract class Model : IValidatableObject
     {
-        public Operation<ValidationResult[]> Validate()
+        public void Validate()
         {
-            var errors = new List<ValidationResult>();
-            Validator.TryValidateObject(this, new ValidationContext(this, serviceProvider: null, items: null), errors, true);
-            return new Operation<ValidationResult[]>
-            {
-                Result = errors.ToArray(),
-                Succeeded = errors.Any() == false,
-                Message = errors.Any() ? errors.Select(e => e.ErrorMessage).Aggregate((ag, e) => ag + ", " + e) : ""
-            };
-
+            Validator.ValidateObject(this, new ValidationContext(this, serviceProvider: null, items: null));
         }
         public virtual IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

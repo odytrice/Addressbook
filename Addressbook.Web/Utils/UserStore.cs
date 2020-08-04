@@ -26,12 +26,13 @@ namespace Addressbook.Web.Utils
 
         public Task CreateAsync(User user)
         {
-            return _account.CreateUser(user).AsTask();
+            return _account.CreateUser(user).Pipe(Task.FromResult);
         }
 
         public Task DeleteAsync(User user)
         {
-            return _account.DeleteUser(user).AsTask();
+            _account.DeleteUser(user);
+            return Task.FromResult(0);
         }
 
         public void Dispose()
@@ -41,23 +42,26 @@ namespace Addressbook.Web.Utils
 
         public Task<User> FindByIdAsync(int userId)
         {
-            return _account.FindByID(userId).Select(u => new User(u)).AsTask();
+            var user = _account.FindByID(userId);
+            return Task.FromResult(new User(user));
         }
 
         public Task<User> FindByNameAsync(string userName)
         {
-            return _account.FindByEmail(userName).Select(u => new User(u)).AsTask();
+            var user = _account.FindByEmail(userName);
+            return Task.FromResult(new User(user));
         }
 
         public Task<string> GetPasswordHashAsync(User user)
         {
-            return _account.GetPasswordHash(user.UserId).AsTask();
+            var passHash = _account.GetPasswordHash(user.UserId);
+            return Task.FromResult(passHash);
         }
 
         public Task<IList<string>> GetRolesAsync(User user)
         {
             var getRoles = _account.GetRoles(user);
-            return getRoles.AsTask();
+            return Task.FromResult(getRoles);
         }
 
         public Task<bool> HasPasswordAsync(User user)
@@ -67,22 +71,23 @@ namespace Addressbook.Web.Utils
 
         public Task<bool> IsInRoleAsync(User user, string roleName)
         {
-            return _account.IsUserInRole(user, roleName).AsTask();
+            return _account.IsUserInRole(user, roleName).Pipe(Task.FromResult);
         }
 
         public Task RemoveFromRoleAsync(User user, string roleName)
         {
-            return _account.RemoveUserFromRole(user, roleName).AsTask();
+            _account.RemoveUserFromRole(user, roleName);
+            return Task.FromResult(1);
         }
 
         public Task SetPasswordHashAsync(User user, string passwordHash)
         {
-            return _account.SetPasswordHash(user.UserId, passwordHash).AsTask();
+            return _account.SetPasswordHash(user.UserId, passwordHash).Pipe(Task.FromResult);
         }
 
         public Task UpdateAsync(User user)
         {
-            return _account.UpdateUser(user).AsTask();
+            return _account.UpdateUser(user).Pipe(Task.FromResult);
         }
     }
 }

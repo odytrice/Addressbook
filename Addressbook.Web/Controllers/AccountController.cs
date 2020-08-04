@@ -17,14 +17,15 @@ namespace Addressbook.Web.Controllers
     {
         private UserManager<User, int> _user;
 
-        public IAuthenticationManager Authentication => HttpContext.GetOwinContext().Authentication;
+        public IAuthManager _authentication;
 
 
-        public AccountController(IAccountManager account)
+        public AccountController(IAccountManager account, IAuthManager authentication)
         {
             var store = new UserStore(account);
             _user = new UserManager<User, int>(store);
             _user.PasswordHasher = new MD5PasswordHasher();
+            _authentication = authentication;
         }
 
         // GET: Account
@@ -36,61 +37,53 @@ namespace Addressbook.Web.Controllers
         [HttpPost]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
-            var validateAndSignIn = from user in ValidateUser(model)
-                                    from signIn in SignIn(user, model.RememberMe)
-                                    select user;
-
-            //TODO: Peform Validation
-            var isValid = validateAndSignIn.Succeeded;
-            //Sign User In
-            if (isValid)
+            try
             {
+                var user = ValidateUser(model);
+                //Sign User In
+                var signIn = SignIn(user, model.RememberMe);
                 //Redirect to Home
                 return RedirectToAction("index", "home");
             }
-            else
+            catch(Exception ex)
             {
+                ModelState.AddModelError("LoginError", ex);
                 return View(model);
             }
         }
 
-        private Operation<User> ValidateUser(LoginModel model)
+        private User ValidateUser(LoginModel model)
         {
-            return Operation.Create(() =>
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    var user = _user.Find(model.Email, model.Password);
-                    if (user == null) throw new Exception("Invalid Username or Password");
-                    return user;
-                }
-                else
-                {
-                    var error = ModelState.Values.SelectMany(v => v.Errors)
-                                                 .Select(e => e.ErrorMessage)
-                                                 .Aggregate((ag, e) => ag + ", " + e);
-                    throw new Exception(error);
-                }
-            });
+                var user = _user.Find(model.Email, model.Password);
+                if (user == null) throw new Exception("Invalid Username or Password");
+                return user;
+            }
+            else
+            {
+                var error = ModelState.Values.SelectMany(v => v.Errors)
+                                             .Select(e => e.ErrorMessage)
+                                             .Aggregate((ag, e) => ag + ", " + e);
+                throw new Exception(error);
+            }
+
         }
 
-        private Operation<ClaimsIdentity> SignIn(User model, bool rememberMe)
+        private ClaimsIdentity SignIn(User model, bool rememberMe)
         {
-            return Operation.Create(() =>
-            {
-                var identity = _user.CreateIdentityAsync(model, DefaultAuthenticationTypes.ApplicationCookie).Result;
+            var identity = _user.CreateIdentityAsync(model, DefaultAuthenticationTypes.ApplicationCookie).Result;
 
-                //Optionally Add Additional Claims
+            //Optionally Add Additional Claims
 
-                Authentication.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
+            _authentication.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
 
-                return identity;
-            });
+            return identity;
         }
 
         public ActionResult LogOut()
         {
-            Authentication.SignOut();
+            _authentication.SignOut();
             return RedirectToAction("login");
         }
 

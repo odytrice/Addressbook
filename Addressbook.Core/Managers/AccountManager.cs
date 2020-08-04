@@ -18,106 +18,73 @@ namespace Addressbook.Core.Managers
             _queries = queries;
         }
 
-        public Operation<UserModel> CreateUser(UserModel model)
+        public UserModel CreateUser(UserModel model)
         {
-            return Operation.Create(() =>
-            {
-                //Validate User
-                model.Validate().Throw();
+            //Validate User
+            model.Validate();
 
-                //Check to see if User already exists
-                var user = _queries.GetUserById(model.UserId);
-                if (user != null) throw new Exception("User Already Exists");
+            //Check to see if User already exists
+            var user = _queries.GetUserById(model.UserId);
+            if (user != null) throw new Exception("User Already Exists");
 
-                var newUser = _queries.CreateUser(model);
-                return newUser;
-            });
+            var newUser = _queries.CreateUser(model);
+            return newUser;
         }
 
-        public Operation DeleteUser(UserModel user)
+        public void DeleteUser(UserModel user)
         {
-            return Operation.Create(() =>
-            {
-                _queries.DeleteUser(user);
-            });
+            _queries.DeleteUser(user);
         }
 
-        public Operation<UserModel> FindByEmail(string userName)
+        public UserModel FindByEmail(string userName)
         {
-            return Operation.Create(() =>
-            {
-                return _queries.FindByEmail(userName);
-            });
+            return _queries.FindByEmail(userName);
         }
 
-        public Operation<UserModel> FindByID(int userId)
+        public UserModel FindByID(int userId)
         {
-            return Operation.Create(() =>
-            {
-                var user = _queries.GetUserById(userId);
-                return user;
-            });
+            var user = _queries.GetUserById(userId);
+            return user;
         }
 
-        public Operation<string> GetPasswordHash(int userId)
+        public string GetPasswordHash(int userId)
         {
-            return Operation.Create(() =>
-            {
-                var user = _queries.GetUserById(userId);
-                return user.Password;
-            });
+            var user = _queries.GetUserById(userId);
+            return user.Password;
         }
 
-        public Operation<PermissionModel[]> GetPermissions(int userId)
+        public PermissionModel[] GetPermissions(int userId)
         {
-            return Operation.Create(() =>
-            {
-                return _queries.GetPermissions(userId);
-            });
+            return _queries.GetPermissions(userId);
         }
 
-        public Operation<IList<string>> GetRoles(UserModel user)
+        public IList<string> GetRoles(UserModel user)
         {
-            return Operation.Create(() =>
-            {
-                var roles = _queries.GetRoles(user.UserId).Select(r => r.Name).ToList();
-                return roles as IList<string>;
-            });
+            var roles = _queries.GetRoles(user.UserId).Select(r => r.Name).ToList();
+            return roles as IList<string>;
         }
 
-        public Operation<bool> IsUserInRole(UserModel user, string roleName)
+        public bool IsUserInRole(UserModel user, string roleName)
         {
-            return Operation.Create(() =>
-            {
-                var roles = _queries.GetRoles(user.UserId);
-                return roles.Any(r => r.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase));
-            });
+            var roles = _queries.GetRoles(user.UserId);
+            return roles.Any(r => r.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase));
         }
 
-        public Operation RemoveUserFromRole(UserModel user, string roleName)
+        public void RemoveUserFromRole(UserModel user, string roleName)
         {
-            return Operation.Create(() =>
-            {
-                var role = _queries.GetRoleByName(roleName);
-                if (role == null) throw new Exception("Invalid Role Name");
-                _queries.RemoveUserRole(user.UserId, role.RoleId);
-            });
+            var role = _queries.GetRoleByName(roleName);
+            if (role == null) throw new Exception("Invalid Role Name");
+            _queries.RemoveUserRole(user.UserId, role.RoleId);
         }
 
-        public Operation<string> SetPasswordHash(int userId, string passwordHash)
+        public string SetPasswordHash(int userId, string passwordHash)
         {
-            return Operation.Create(() =>
-            {
-                return _queries.UpdatePasswordHash(userId, passwordHash);
-            });
+            return _queries.UpdatePasswordHash(userId, passwordHash);
         }
 
-        public Operation<UserModel> UpdateUser(UserModel user)
+        public UserModel UpdateUser(UserModel user)
         {
-            return Operation.Create(() =>
-            {
-                return _queries.UpdateUser(user);
-            });
+            return _queries.UpdateUser(user);
         }
     }
 }

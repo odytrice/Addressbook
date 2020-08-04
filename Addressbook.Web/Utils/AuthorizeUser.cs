@@ -29,14 +29,14 @@ namespace Addressbook.Web.Utils
                 {
                     //Fetch Permissions
                     var getPermissions = _account.GetPermissions(httpContext.User.Identity.GetUserId<int>());
-                    if (getPermissions.Succeeded)
+                    if (getPermissions.Any())
                     {
                         //Cache Permissions
-                        httpContext.Session["Permissions"] = getPermissions.Result.Select(p => p.Name).ToArray();
+                        httpContext.Session["Permissions"] = getPermissions.Select(p => p.Name).ToArray();
 
                         //Check to See if User Has all the Required Permissions
                         var query = from permission in _permissions
-                                    join userpermission in getPermissions.Result
+                                    join userpermission in getPermissions
                                     on permission.ToLower() equals userpermission.Name.ToLower()
                                     select permission;
                         return query.Any();
